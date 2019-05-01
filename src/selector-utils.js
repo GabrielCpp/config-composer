@@ -4,6 +4,7 @@ const createOn = (condition, producer, ...params) => (condition ? producer(...pa
 const defineOn = (condition, value) => (condition ? value : undefined);
 const isDefined = negate(isUndefined);
 const pickDefined = obj => pickBy(obj, isDefined);
+
 const walkObject = (obj, apply, path = []) => {
   if (isArray(obj) || isPlainObject(obj)) {
     for (const [key, value] of sortBy(Object.entries(obj), [0])) {

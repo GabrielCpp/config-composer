@@ -24,9 +24,25 @@ describe('ConfigComposition', () => {
   });
 
   test('apply function to merge values', () => {
-    merger.a.b.c(5);
-    merger.a((...x) => x[0] * x[1], 5, 6);
-    expect(merger.a()).toEqual(30);
+    merger.a(2);
+    merger.a((...x) => x[0] * x[1] - x[2], 3, 1);
+    expect(merger.a()).toEqual(5);
+  });
+
+  test('apply function to merge have correct order', () => {
+    let actualInputs;
+
+    merger.a(1);
+    merger.a(
+      (...x) => {
+        actualInputs = x;
+        return x;
+      },
+      2,
+      3
+    );
+
+    expect(actualInputs).toEqual([1, 2, 3]);
   });
 
   test('base config is setted', () => {

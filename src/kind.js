@@ -34,6 +34,10 @@ class Kind {
     this.extraTags = [];
   }
 
+  reset(config) {
+    this.config = config;
+  }
+
   addExtraTags(...tags) {
     this.extraTags = tags;
     return this;
@@ -55,6 +59,14 @@ class Kind {
     return newConfig;
   }
 
+  getAnnotatedConfig() {
+    return cloneObject(this.config);
+  }
+
+  getRawConfig() {
+    return this.config;
+  }
+
   gatherTagList(tagName) {
     const values = [];
     const accumulate = value => {
@@ -70,10 +82,6 @@ class Kind {
     }
 
     return values;
-  }
-
-  walk(accumulate) {
-    walkObject(this.config, accumulate);
   }
 
   getDetails() {

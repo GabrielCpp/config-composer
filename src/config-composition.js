@@ -58,9 +58,10 @@ class ConfigComposition {
       const [mergeFn, ...params] = argumentsList;
 
       if (tokens.length === 0) {
-        this.config = mergeFn(...params);
+        this.config = mergeFn(this.config, ...params);
       } else {
-        set(this.config, tokens, mergeFn(...params));
+        const configValue = get(this.config, tokens);
+        set(this.config, tokens, mergeFn(configValue, ...params));
       }
     }
 
