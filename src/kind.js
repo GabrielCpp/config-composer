@@ -1,4 +1,4 @@
-const rootDirname = require('app-root-path');
+const rootDirname = require('app-root-path').path;
 const { set } = require('lodash');
 const { walkObject, cloneObject } = require('./selector-utils.js');
 const { Tag } = require('./tags.js');
