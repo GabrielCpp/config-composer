@@ -1,3 +1,4 @@
+const rootDirname = require('app-root-path');
 const { set } = require('lodash');
 const { walkObject, cloneObject } = require('./selector-utils.js');
 const { Tag } = require('./tags.js');
@@ -11,9 +12,9 @@ let dependenciesExistAssert = null;
 const tagAsPackage = value => new Tag(PACKAGE_TAG, value);
 
 class Kind {
-  static enableDependenciesAssert(enabled, rootDir) {
+  static enableDependenciesAssert(enabled = true) {
     if (enabled) {
-      dependenciesExistAssert = new DependenciesExistAssert(PACKAGE_TAG, resolve(rootDir, 'package.json'));
+      dependenciesExistAssert = new DependenciesExistAssert(PACKAGE_TAG, resolve(rootDirname, 'package.json'));
     } else {
       dependenciesExistAssert;
     }
