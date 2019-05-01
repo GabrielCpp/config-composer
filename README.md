@@ -1,20 +1,42 @@
-
-Exemple webpack config
-
+Exemple webpack ts config with Kind and tag.
 
 ```js
-const { applyConfig } = require('./webpack-defaults');
+const { Kind, tagAsPackage } = require('./kind.js');
 
-module.exports = (env = 'test', options = {}) => {
-  const dirname = __dirname;
-  const envConfigCreator = targetMaker =>
-    new Map([
-      ['client', () => targetMaker('client')],
-      ['server', () => targetMaker('server')],
-      ['test', () => targetMaker('server')],
-      ['all', () => [targetMaker('client'), targetMaker('server')]]
-    ]);
+const isProd = mode => mode !== 'development';
+const isDev = mode => mode === 'development';
 
-  return applyConfig(env, options, { envConfigCreator, dirname });
-};
+const tsReactRule = mode =>
+  new Kind(
+    {
+      test: /\.(ts|tsx)$/,
+      exclude: /node_modules/,
+      use: [
+        defineOn(isProd(mode), tagAsPackage('webpack-strip-block')),
+        {
+          loader: tagAsPackage('babel-loader'),
+          options: {
+            presets: [
+              tagAsPackage('@babel/preset-typescript'),
+              [
+                tagAsPackage('@babel/preset-env'),
+                {
+                  useBuiltIns: 'entry',
+                  corejs: '3'
+                }
+              ],
+              tagAsPackage('@babel/preset-react')
+            ],
+            plugins: [
+              tagAsPackage('@babel/plugin-proposal-class-properties'),
+              tagAsPackage('@babel/plugin-proposal-object-rest-spread'),
+              tagAsPackage('@babel/plugin-transform-modules-commonjs'),
+              tagAsPackage('@babel/plugin-transform-regenerator')
+            ]
+          }
+        }
+      ].filter(isDefined)
+    },
+    'rule'
+  ).addExtraTags(tagAsPackage('@babel/core'), tagAsPackage('core-js'));
 ```
