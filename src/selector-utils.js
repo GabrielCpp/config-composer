@@ -70,6 +70,17 @@ const safeInvoke = fn => {
   return { result, error, hasError: error !== null, hasResult: result !== null };
 };
 
+const forceIndexOf = (key, value, template) => elements => {
+  let indexAt = elements.findIndex(matchesProperty(key, value));
+
+  if (indexAt === -1) {
+    indexAt = elements.length;
+    elements.push(template);
+  }
+
+  return String(indexAt);
+};
+
 module.exports = {
   createOn,
   defineOn,
@@ -78,5 +89,6 @@ module.exports = {
   isPlainObject,
   walkObject,
   cloneObject,
-  safeInvoke
+  safeInvoke,
+  forceIndexOf
 };

@@ -35,11 +35,13 @@ const takeFirstMerge = (...elements) => head(elements);
 const combineStrict = (...args) => combine(eq, takeFirstMerge, ...args);
 const eqProperty = propertyName => (lhs, rhs) => lhs[propertyName] == rhs[propertyName];
 const combineOnProperty = (propertyName, submerge, ...args) => combine(eqProperty(propertyName), submerge, ...args);
+const append = (config, ...elements) => [...config, ...elements];
 
 module.exports = {
   override,
   combine,
   combineStrict,
   combineOnProperty,
-  takeFirstMerge
+  takeFirstMerge,
+  append
 };
