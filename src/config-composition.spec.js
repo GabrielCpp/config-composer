@@ -50,4 +50,35 @@ describe('ConfigComposition', () => {
     const merger = new ConfigComposition(baseConfig);
     expect(merger()).toEqual(baseConfig);
   });
+
+  test('use function as single parameter should extends tokens path', () => {
+    const baseConfig = { options: [{ a: 1, b: 'web' }] };
+    const merger = new ConfigComposition(baseConfig);
+    const fn = x => '0';
+    const actual = merger.options(fn).a();
+
+    expect(actual).toEqual(1);
+  });
+
+  test('Property can be set', () => {
+    const baseConfig = { option: null };
+    const merger = new ConfigComposition(baseConfig);
+    const fn = x => '0';
+
+    merger.option = fn;
+    const actual = merger.option();
+
+    expect(actual).toBe(fn);
+  });
+
+  test('Child property can be set', () => {
+    const baseConfig = { option: { a: null } };
+    const merger = new ConfigComposition(baseConfig);
+    const fn = x => '0';
+
+    merger.option.a = fn;
+    const actual = merger.option.a();
+
+    expect(actual).toBe(fn);
+  });
 });
