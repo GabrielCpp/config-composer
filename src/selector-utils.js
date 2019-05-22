@@ -1,4 +1,4 @@
-const { negate, isUndefined, pickBy, isArray, sortBy } = require('lodash');
+const { negate, isUndefined, pickBy, isArray, sortBy, matchesProperty } = require('lodash');
 
 const createOn = (condition, producer, ...params) => (condition ? producer(...params) : undefined);
 const defineOn = (condition, value) => (condition ? value : undefined);
