@@ -4,6 +4,7 @@ const { walkObject, cloneObject } = require('./selector-utils.js');
 const { Tag } = require('./tags.js');
 const { DependenciesExistAssert } = require('./dependencies-exist-assert.js');
 const { resolve } = require('path');
+const { ConfigComposition } = require('./config-composition');
 
 const PACKAGE_TAG = 'PACKAGE_TAG';
 const globalKindStore = new Map();
@@ -38,47 +39,30 @@ class Kind {
     this.config = config;
   }
 
-  addExtraTags(...tags) {
-    this.extraTags = tags;
+  addTags(...tags) {
+    this.extraTags = [...this.extraTags, ...tags];
     return this;
   }
 
   getConfig() {
-    const newConfig = cloneObject(this.config);
-
     if (dependenciesExistAssert !== null) {
       dependenciesExistAssert.assertDependenciesExists(this.gatherTagList(PACKAGE_TAG));
     }
 
-    walkObject(newConfig, (value, path) => {
-      if (Tag.isTag(value)) {
-        set(newConfig, path, Tag.getTagValue(value));
-      }
-    });
-
-    return newConfig;
-  }
-
-  getAnnotatedConfig() {
     return cloneObject(this.config);
   }
 
-  getRawConfig() {
-    return this.config;
+  getComposer() {
+    return new ConfigComposition(this.config);
   }
 
   gatherTagList(tagName) {
     const values = [];
-    const accumulate = value => {
+
+    for (const value of this.extraTags) {
       if (Tag.isTagged(value, tagName)) {
         values.push(Tag.getTagValue(value));
       }
-    };
-
-    walkObject(this.config, accumulate);
-
-    for (const tag of this.extraTags) {
-      accumulate(tag);
     }
 
     return values;
