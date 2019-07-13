@@ -61,7 +61,7 @@ describe('ConfigComposition', () => {
   test('Given function as single parameter to perperty should extends tokens path', () => {
     const baseConfig = { options: [{ a: 1, b: 'web' }] };
     const composer = new ConfigComposition(baseConfig);
-    const fn = x => '0';
+    const fn = () => '0';
     const actual = composer.options(fn).a();
 
     expect(actual).toEqual(1);
