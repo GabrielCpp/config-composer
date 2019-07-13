@@ -5,6 +5,7 @@ const { Tag } = require('./tags.js');
 const { DependenciesExistAssert } = require('./dependencies-exist-assert.js');
 const { resolve } = require('path');
 const { ConfigComposition } = require('./config-composition');
+const { buildMergerFactory } = require('./compose-tools');
 
 const PACKAGE_TAG = 'PACKAGE_TAG';
 const tagAsPackage = value => new Tag(PACKAGE_TAG, value);
@@ -45,6 +46,11 @@ class Kind {
 
   getComposer() {
     return new ConfigComposition(this.config);
+  }
+
+  enhance(otherConfig, enhancer = buildMergerFactory) {
+    this.config = this.getComposer()(enhancer, otherConfig)();
+    return this;
   }
 
   gatherTagList(tagName) {
