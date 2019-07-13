@@ -31,13 +31,13 @@ const indexOfOrDefault = (key, value, template = {}) => elements => {
   return String(indexAt);
 };
 
-class CombineConfig {
+class Merger {
   constructor(keyGetters) {
     this.keyGetters = keyGetters;
   }
 
-  static buildFactory(keyGetters) {
-    return (...configs) => new CombineConfig(keyGetters).mergeConfigs(configs);
+  static buildMergerFactory(keyGetters) {
+    return (...configs) => new Merger(keyGetters).mergeConfigs(configs);
   }
 
   mergeConfigs(configs) {
@@ -157,5 +157,5 @@ module.exports = {
   indexOfOrDefault,
   append,
   override,
-  CombineConfig
+  buildMergerFactory: Merger.buildMergerFactory
 };

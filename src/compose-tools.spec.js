@@ -1,4 +1,4 @@
-const { createOn, defineOn, isDefined, override, CombineConfig } = require('./compose-tools.js');
+const { createOn, defineOn, isDefined, override, buildMergerFactory } = require('./compose-tools.js');
 
 describe('compose-tools', () => {
   test('createOn', () => {
@@ -80,7 +80,7 @@ describe('compose-tools', () => {
     };
 
     const idGetters = [entry => entry.loader];
-    const merge = CombineConfig.buildFactory(idGetters);
+    const merge = buildMergerFactory(idGetters);
     const actual = merge(configA, configB);
 
     expect(actual).toEqual(expected);
