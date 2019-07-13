@@ -48,8 +48,8 @@ class Kind {
     return new ConfigComposition(this.config);
   }
 
-  enhance(otherConfig, enhancer) {
-    this.config = this.getComposer()(enhancer, otherConfig)();
+  enhance(enhancer, ...otherConfig) {
+    this.config = this.getComposer()(enhancer, ...otherConfig)();
     return this;
   }
 
