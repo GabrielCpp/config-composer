@@ -1,16 +1,14 @@
 const rootDirname = require('app-root-path').path;
 const { set } = require('lodash');
-const { walkObject, cloneObject } = require('./selector-utils.js');
+const { walkObject, cloneObject } = require('./utils');
 const { Tag } = require('./tags.js');
 const { DependenciesExistAssert } = require('./dependencies-exist-assert.js');
 const { resolve } = require('path');
 const { ConfigComposition } = require('./config-composition');
 
 const PACKAGE_TAG = 'PACKAGE_TAG';
-const globalKindStore = new Map();
-let dependenciesExistAssert = null;
-
 const tagAsPackage = value => new Tag(PACKAGE_TAG, value);
+let dependenciesExistAssert = null;
 
 class Kind {
   static enableDependenciesAssert(enabled = true) {
@@ -21,14 +19,6 @@ class Kind {
     }
   }
 
-  static declareKind(name, identityPredicate, childNames) {
-    globalKindStore.set(name, { name, identityPredicate, childNames });
-  }
-
-  static getKindDetails(name) {
-    return globalKindStore.get(name);
-  }
-
   constructor(config, name = '') {
     this.name = name;
     this.config = config;
@@ -37,6 +27,7 @@ class Kind {
 
   reset(config) {
     this.config = config;
+    return this;
   }
 
   addTags(...tags) {
@@ -66,10 +57,6 @@ class Kind {
     }
 
     return values;
-  }
-
-  getDetails() {
-    return globalKindStore.get(this.name);
   }
 }
 

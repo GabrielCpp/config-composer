@@ -1,16 +1,15 @@
 const { get, set, isFunction, isString } = require('lodash');
 
 class TokenizeProxy {
-  constructor(parent) {
+  constructor(parent, tokens = []) {
     this.proxy = new Proxy(function() {}, this);
     this.parent = parent;
-    this.tokens = [];
+    this.tokens = tokens;
+    return this.proxy;
   }
 
   get(target, property, receiver) {
-    this.tokens.push(property);
-
-    return this.proxy;
+    return new TokenizeProxy(this.parent, [...this.tokens, property]);
   }
 
   set(target, key, value) {
@@ -22,7 +21,7 @@ class TokenizeProxy {
       const property = argumentsList[0](get(this.parent.config, this.tokens));
 
       if (isString(property)) {
-        this.tokens.push(property);
+        return new TokenizeProxy(this.parent, [...this.tokens, property]);
       }
 
       return this.proxy;
@@ -30,25 +29,18 @@ class TokenizeProxy {
 
     return this.parent.applyTokenChain(this.tokens, argumentsList);
   }
-
-  reset(firstToken) {
-    this.tokens.splice(0, this.tokens.length);
-    this.tokens.push(firstToken);
-    return this.proxy;
-  }
 }
 
 class ConfigComposition {
   constructor(baseConfig = {}) {
     this.config = baseConfig;
     this.proxy = new Proxy(function() {}, this);
-    this.tokenizer = new TokenizeProxy(this);
 
     return this.proxy;
   }
 
   get(target, property, receiver) {
-    return this.tokenizer.reset(property);
+    return new TokenizeProxy(this, [property]);
   }
 
   set(target, key, value) {
